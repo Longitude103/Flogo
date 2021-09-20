@@ -1,4 +1,4 @@
-# Flowgo
+# Flogo
 
 This is a go implementation that is inspired by the Flopy package in Python
 and is intended to help write out MODFLOW 6 files for model execution. This package
