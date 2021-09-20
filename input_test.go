@@ -1,4 +1,4 @@
-package Flowgo
+package Flogo
 
 import "testing"
 
