@@ -1,8 +1,8 @@
-package Flowgo
+package Flogo
 
 import (
 	"fmt"
-	"github.com/Longitude103/Flowgo/MF6"
+	"github.com/Longitude103/Flogo/MF6"
 )
 
 // Input is a function that returns and error but otherwise creates a zip file with the MODFLOW WEL or RCH files inside it
