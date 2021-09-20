@@ -1,3 +1,3 @@
-module github.com/Longitude103/Flowgo
+module github.com/Longitude103/Flogo
 
 go 1.17
