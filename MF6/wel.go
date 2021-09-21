@@ -4,13 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"time"
 )
 
-type welData interface {
-	printLine()
-}
-
-func Wel(fileName string, data ...interface{}) error {
+func Wel(fileName string, data []fileData) error {
 	fmt.Println("Inside Wel function")
 	fn := "./" + fileName + ".WEL6"
 	file, err := os.Create(fn)
@@ -33,7 +30,19 @@ func Wel(fileName string, data ...interface{}) error {
 	}
 
 	fileLines = nil
+
 	// write the first period
+	fDate, lDate, err := firstLastDate(data)
+	if err != nil {
+		return err
+	}
+
+	_ = fDate
+	_ = lDate
+	// filter data to just the fDate
+	// write the stressPeriod
+
+	// move to next month and start over
 
 	return nil
 }
@@ -62,4 +71,9 @@ func writeLines(writer *bufio.Writer, lines []string) error {
 	}
 
 	return nil
+}
+
+func stressPeriod(fDate time.Time, data []fileData) ([]string, error) {
+
+	return nil, nil
 }
