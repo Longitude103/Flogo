@@ -35,6 +35,9 @@ func firstLastDate(data []fileData) (firstDate time.Time, lastDate time.Time, er
 	return fDate, lDate, nil
 }
 
+// monthsCountSince is a function that counts the number of months between two dates. The first month is counted and the
+// last month is not, so 6/1 to 10/1 is 4 months in this function, it does not consider number of days in either start
+// or end dates so 6/1 to 10/31 is still 4 months.
 func monthsCountSince(startDate time.Time, endDate time.Time) int {
 	months := 0
 	month := startDate.Month()

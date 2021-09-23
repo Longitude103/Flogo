@@ -13,4 +13,8 @@ func Test_monthsCountSince(t *testing.T) {
 	count := monthsCountSince(startDate, endDate)
 
 	fmt.Println(count)
+
+	if count != 4 {
+		t.Error("count function not correct number of months")
+	}
 }
