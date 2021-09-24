@@ -2,6 +2,7 @@ package MF6
 
 import (
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -15,12 +16,17 @@ type fileData interface {
 // firstLastDate receives a slice of structs with a date() method and returns the first and last date that is present in the data.
 func firstLastDate(data []fileData) (firstDate time.Time, lastDate time.Time, err error) {
 	fDate := time.Now()
-	lDate := time.Now()
+	var lDate time.Time
 	initDate := fDate
+	first := true
 
 	for _, d := range data {
 		if fDate.After(d.date()) {
 			fDate = d.date()
+			if first {
+				lDate = fDate
+				first = false
+			}
 		}
 
 		if lDate.Before(d.date()) {
@@ -29,6 +35,7 @@ func firstLastDate(data []fileData) (firstDate time.Time, lastDate time.Time, er
 	}
 
 	if initDate == fDate || initDate == lDate {
+		fmt.Println(fDate, lDate)
 		return fDate, lDate, errors.New("didn't find a date of the data")
 	}
 

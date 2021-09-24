@@ -29,16 +29,14 @@ var d0 = testStruct{dt: time.Date(2021, 4, 1, 0, 0, 0, 0, time.UTC), nd: 1,
 	pumping: -12, well: 101}
 var d1 = testStruct{dt: time.Date(2021, 4, 1, 0, 0, 0, 0, time.UTC), nd: 2,
 	pumping: -14, well: 102}
-var d2 = testStruct{dt: time.Date(2021, 5, 1, 0, 0, 0, 0, time.UTC), nd: 3,
+var d2 = testStruct{dt: time.Date(2021, 5, 1, 0, 0, 0, 0, time.UTC), nd: 1,
 	pumping: -16, well: 103}
-var d3 = testStruct{dt: time.Date(2021, 6, 1, 0, 0, 0, 0, time.UTC), nd: 4,
+var d3 = testStruct{dt: time.Date(2021, 6, 1, 0, 0, 0, 0, time.UTC), nd: 2,
 	pumping: -18, well: 104}
 
 var data = []fileData{d0, d1, d2, d3}
 
 func TestWel(t *testing.T) {
-	var data = []fileData{}
-
 	if err := Wel("test", data); err != nil {
 		t.Error("Wel function errored with", err)
 	}
