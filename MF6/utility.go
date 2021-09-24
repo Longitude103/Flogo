@@ -1,8 +1,10 @@
 package MF6
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -58,4 +60,141 @@ func monthsCountSince(startDate time.Time, endDate time.Time) int {
 	}
 
 	return months
+}
+
+// spHeader creates the stress period welHeader for WEL6
+func spHeader(period int) string {
+	return fmt.Sprintf("BEGIN PERIOD %d\n", period)
+}
+
+// spFooter creates the stress period footer
+func spFooter() string {
+	return fmt.Sprint("END PERIOD\n\n")
+}
+
+// writeLines is a function to write lines of text to a writer from a slice of strings
+func writeLines(writer *bufio.Writer, lines []string) error {
+	for _, line := range lines {
+		_, err := writer.WriteString(line)
+		if err != nil {
+			return err
+		}
+	}
+
+	if err := writer.Flush(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// filterDataByDate is a function that filters the slice of fileData and then returns another slice of only those records
+// that match the date passed into the function.
+func filterDataByDate(dt time.Time, data []fileData) (rData []fileData, dataPresent bool) {
+	for _, d := range data {
+		if d.date() == dt {
+			rData = append(rData, d)
+		}
+	}
+
+	if len(rData) == 0 {
+		return rData, false
+	}
+
+	return rData, true
+}
+
+// stressPeriod is a function to return a slice of strings that are the formatted stress period data
+func stressPeriod(data []fileData, wel bool) (spData []string, err error) {
+	if len(data) == 0 {
+		return spData, errors.New("no data")
+	}
+
+	for _, d := range data {
+		var s string
+		if wel {
+			// wel file just write the node and value
+			s = fmt.Sprintf(" %d %f\n", d.node(), d.value())
+		} else {
+			// rch file, need a layer number
+			s = fmt.Sprintf(" %d %f 1\n", d.node(), d.value()) // single layer only, can do future upgrade
+		}
+
+		spData = append(spData, s)
+	}
+
+	return spData, nil
+}
+
+func welRchCreator(wel bool, fullFilePath string, data []fileData) error {
+	file, err := os.Create(fullFilePath)
+	if err != nil {
+		return err
+	}
+
+	writer := bufio.NewWriter(file)
+	var fileLines []string
+
+	var hd []string
+	var errHd error
+	if wel {
+		hd, errHd = welHeader()
+	} else {
+		hd, errHd = rchHeader()
+	}
+	if errHd != nil {
+		return err
+	}
+
+	// writes the welHeader
+	fileLines = append(fileLines, hd...)
+	if err := writeLines(writer, fileLines); err != nil {
+		return err
+	}
+
+	fileLines = nil
+
+	// write the first period
+	fDate, lDate, err := firstLastDate(data)
+	if err != nil {
+		return err
+	}
+
+	monthCount := monthsCountSince(fDate, lDate)
+	nextDate := fDate
+
+	for i := 0; i < monthCount+1; i++ {
+		var spData []string
+
+		// filter data to just the fDate
+		filteredData, dataPresent := filterDataByDate(nextDate, data)
+		// stress period welHeader
+		spData = append(spData, spHeader(i+1))
+		if !dataPresent {
+			// since it's reasonable for no data in a month, might be the blank stress period
+			spData = append(spData, spFooter())
+			if err2 := writeLines(writer, spData); err2 != nil {
+				return err2
+			}
+
+			nextDate = nextDate.AddDate(0, 1, 0)
+			continue
+		}
+
+		// stress period data
+		d, err := stressPeriod(filteredData, wel)
+		if err == nil {
+			spData = append(spData, d...)
+		}
+
+		// stress period footer
+		spData = append(spData, spFooter())
+		if err1 := writeLines(writer, spData); err1 != nil {
+			return err1
+		}
+
+		nextDate = nextDate.AddDate(0, 1, 0)
+	}
+
+	return nil
 }
