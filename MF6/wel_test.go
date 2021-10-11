@@ -13,15 +13,15 @@ type testStruct struct {
 	well    int
 }
 
-func (t testStruct) date() time.Time {
+func (t testStruct) Date() time.Time {
 	return t.dt
 }
 
-func (t testStruct) node() int {
+func (t testStruct) Node() int {
 	return t.nd
 }
 
-func (t testStruct) value() float64 {
+func (t testStruct) Value() float64 {
 	return t.pumping
 }
 

@@ -8,11 +8,11 @@ import (
 	"time"
 )
 
-// This package is several utility functions used across the MF6 package.
+// FileData This package is several utility functions used across the MF6 package.
 type FileData interface {
-	date() time.Time
-	node() int
-	value() float64
+	Date() time.Time
+	Node() int
+	Value() float64
 }
 
 // firstLastDate receives a slice of structs with a date() method and returns the first and last date that is present in the data.
@@ -23,16 +23,16 @@ func firstLastDate(data []FileData) (firstDate time.Time, lastDate time.Time, er
 	first := true
 
 	for _, d := range data {
-		if fDate.After(d.date()) {
-			fDate = d.date()
+		if fDate.After(d.Date()) {
+			fDate = d.Date()
 			if first {
 				lDate = fDate
 				first = false
 			}
 		}
 
-		if lDate.Before(d.date()) {
-			lDate = d.date()
+		if lDate.Before(d.Date()) {
+			lDate = d.Date()
 		}
 	}
 
@@ -92,7 +92,7 @@ func writeLines(writer *bufio.Writer, lines []string) error {
 // that match the date passed into the function.
 func filterDataByDate(dt time.Time, data []FileData) (rData []FileData, dataPresent bool) {
 	for _, d := range data {
-		if d.date() == dt {
+		if d.Date() == dt {
 			rData = append(rData, d)
 		}
 	}
@@ -114,10 +114,10 @@ func stressPeriod(data []FileData, wel bool) (spData []string, err error) {
 		var s string
 		if wel {
 			// wel file just write the node and value
-			s = fmt.Sprintf(" %d %f\n", d.node(), d.value())
+			s = fmt.Sprintf(" %d %f\n", d.Node(), d.Value())
 		} else {
 			// rch file, need a layer number
-			s = fmt.Sprintf(" %d %f 1\n", d.node(), d.value()) // single layer only, can do future upgrade
+			s = fmt.Sprintf(" %d %f 1\n", d.Node(), d.Value()) // single layer only, can do future upgrade
 		}
 
 		spData = append(spData, s)

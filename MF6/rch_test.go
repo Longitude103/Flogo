@@ -12,15 +12,15 @@ type testRCHStruct struct {
 	recharge float64
 }
 
-func (t testRCHStruct) date() time.Time {
+func (t testRCHStruct) Date() time.Time {
 	return t.dt
 }
 
-func (t testRCHStruct) node() int {
+func (t testRCHStruct) Node() int {
 	return t.nd
 }
 
-func (t testRCHStruct) value() float64 {
+func (t testRCHStruct) Value() float64 {
 	return t.recharge
 }
 
