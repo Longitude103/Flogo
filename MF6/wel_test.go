@@ -34,7 +34,7 @@ var d2 = testStruct{dt: time.Date(2021, 5, 1, 0, 0, 0, 0, time.UTC), nd: 1,
 var d3 = testStruct{dt: time.Date(2021, 6, 1, 0, 0, 0, 0, time.UTC), nd: 2,
 	pumping: -18, well: 104}
 
-var data = []fileData{d0, d1, d2, d3}
+var data = []FileData{d0, d1, d2, d3}
 
 func TestWel(t *testing.T) {
 	if err := Wel("test", data); err != nil {

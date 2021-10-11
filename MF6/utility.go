@@ -9,14 +9,14 @@ import (
 )
 
 // This package is several utility functions used across the MF6 package.
-type fileData interface {
+type FileData interface {
 	date() time.Time
 	node() int
 	value() float64
 }
 
 // firstLastDate receives a slice of structs with a date() method and returns the first and last date that is present in the data.
-func firstLastDate(data []fileData) (firstDate time.Time, lastDate time.Time, err error) {
+func firstLastDate(data []FileData) (firstDate time.Time, lastDate time.Time, err error) {
 	fDate := time.Now()
 	var lDate time.Time
 	initDate := fDate
@@ -88,9 +88,9 @@ func writeLines(writer *bufio.Writer, lines []string) error {
 	return nil
 }
 
-// filterDataByDate is a function that filters the slice of fileData and then returns another slice of only those records
+// filterDataByDate is a function that filters the slice of FileData and then returns another slice of only those records
 // that match the date passed into the function.
-func filterDataByDate(dt time.Time, data []fileData) (rData []fileData, dataPresent bool) {
+func filterDataByDate(dt time.Time, data []FileData) (rData []FileData, dataPresent bool) {
 	for _, d := range data {
 		if d.date() == dt {
 			rData = append(rData, d)
@@ -105,7 +105,7 @@ func filterDataByDate(dt time.Time, data []fileData) (rData []fileData, dataPres
 }
 
 // stressPeriod is a function to return a slice of strings that are the formatted stress period data
-func stressPeriod(data []fileData, wel bool) (spData []string, err error) {
+func stressPeriod(data []FileData, wel bool) (spData []string, err error) {
 	if len(data) == 0 {
 		return spData, errors.New("no data")
 	}
@@ -126,7 +126,7 @@ func stressPeriod(data []fileData, wel bool) (spData []string, err error) {
 	return spData, nil
 }
 
-func welRchCreator(wel bool, fullFilePath string, data []fileData) error {
+func welRchCreator(wel bool, fullFilePath string, data []FileData) error {
 	file, err := os.Create(fullFilePath)
 	if err != nil {
 		return err

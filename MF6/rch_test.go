@@ -37,7 +37,7 @@ var r4 = testRCHStruct{dt: time.Date(2021, 8, 1, 0, 0, 0, 0, time.UTC), nd: 3,
 var r5 = testRCHStruct{dt: time.Date(2021, 10, 1, 0, 0, 0, 0, time.UTC), nd: 3,
 	recharge: .000054884}
 
-var rchTestData = []fileData{r0, r1, r2, r3, r4, r5}
+var rchTestData = []FileData{r0, r1, r2, r3, r4, r5}
 
 func Test_Rch(t *testing.T) {
 	err := Rch("testRch", rchTestData)

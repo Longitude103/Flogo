@@ -1,6 +1,6 @@
 package MF6
 
-func Wel(fileName string, data []fileData) error {
+func Wel(fileName string, data []FileData) error {
 	fn := "./" + fileName + ".WEL6"
 
 	if err := welRchCreator(true, fn, data); err != nil {

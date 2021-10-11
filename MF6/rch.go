@@ -1,6 +1,6 @@
 package MF6
 
-func Rch(fileName string, data []fileData) error {
+func Rch(fileName string, data []FileData) error {
 	fn := "./" + fileName + ".rch"
 
 	if err := welRchCreator(false, fn, data); err != nil {
