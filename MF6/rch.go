@@ -3,7 +3,7 @@ package MF6
 import "path/filepath"
 
 func Rch(fileName string, data []FileData, path string) error {
-	fn := fileName + ".WEL6"
+	fn := fileName + ".rch"
 	fullPath := filepath.Join(path, fn)
 
 	if err := welRchCreator(false, fullPath, data); err != nil {
