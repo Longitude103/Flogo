@@ -1,9 +1,12 @@
 package MF6
 
-func Rch(fileName string, data []FileData) error {
-	fn := "./" + fileName + ".rch"
+import "path/filepath"
 
-	if err := welRchCreator(false, fn, data); err != nil {
+func Rch(fileName string, data []FileData, path string) error {
+	fn := fileName + ".WEL6"
+	fullPath := filepath.Join(path, fn)
+
+	if err := welRchCreator(false, fullPath, data); err != nil {
 		return err
 	}
 

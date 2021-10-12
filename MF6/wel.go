@@ -1,9 +1,12 @@
 package MF6
 
-func Wel(fileName string, data []FileData) error {
-	fn := "./" + fileName + ".WEL6"
+import "path/filepath"
 
-	if err := welRchCreator(true, fn, data); err != nil {
+func Wel(fileName string, data []FileData, path string) error {
+	fn := fileName + ".WEL6"
+	fullPath := filepath.Join(path, fn)
+
+	if err := welRchCreator(true, fullPath, data); err != nil {
 		return err
 	}
 
