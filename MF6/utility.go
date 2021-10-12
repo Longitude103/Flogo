@@ -159,10 +159,8 @@ func welRchCreator(wel bool, fullFilePath string, data []FileData) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("first date:", fDate, "last Date:", lDate)
 
 	monthCount := monthsCountSince(fDate, lDate)
-	fmt.Println("Month Count:", monthCount)
 	nextDate := fDate
 
 	for i := 0; i < monthCount+1; i++ {
