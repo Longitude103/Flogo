@@ -37,7 +37,7 @@ var d3 = testStruct{dt: time.Date(2021, 6, 1, 0, 0, 0, 0, time.UTC), nd: 2,
 var data = []FileData{d0, d1, d2, d3}
 
 func TestWel(t *testing.T) {
-	if err := Wel("test", data, "."); err != nil {
+	if err := Wel("test", data, ".", "test description"); err != nil {
 		t.Error("Wel function errored with", err)
 	}
 }

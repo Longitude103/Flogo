@@ -40,7 +40,7 @@ var data []interface {
 func TestInput(t *testing.T) {
 	data = append(data, d1, d2, d3, d4, d5, d6)
 
-	if err := Input(true, false, "testFile", data, "."); err != nil {
+	if err := Input(true, false, "testFile", data, ".", "test description"); err != nil {
 		t.Error("Function produced an error")
 	}
 
@@ -49,7 +49,7 @@ func TestInput(t *testing.T) {
 func TestInput2(t *testing.T) {
 	data = append(data, d1, d2, d3, d4, d5, d6)
 
-	if err := Input(false, true, "testRCHFile", data, "."); err != nil {
+	if err := Input(false, true, "testRCHFile", data, ".", ""); err != nil {
 		t.Error("Function produced error with RCH")
 	}
 }

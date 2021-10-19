@@ -40,7 +40,7 @@ var r5 = testRCHStruct{dt: time.Date(2021, 10, 1, 0, 0, 0, 0, time.UTC), nd: 3,
 var rchTestData = []FileData{r0, r1, r2, r3, r4, r5}
 
 func Test_Rch(t *testing.T) {
-	err := Rch("testRch", rchTestData, ".")
+	err := Rch("testRch", rchTestData, ".", "test description")
 
 	if err != nil {
 		t.Errorf("Function errored with %s", err)
