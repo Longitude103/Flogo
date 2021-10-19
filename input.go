@@ -11,20 +11,20 @@ func Input(WEL bool, RCH bool, fileName string, data []interface {
 	Date() time.Time
 	Node() int
 	Value() float64
-}, path string) error {
+}, path string, mDesc string) error {
 	dataInterface := make([]MF6.FileData, len(data))
 	for i, v := range data {
 		dataInterface[i] = v
 	}
 
 	if WEL {
-		if err := MF6.Wel(fileName, dataInterface, path); err != nil {
+		if err := MF6.Wel(fileName, dataInterface, path, mDesc); err != nil {
 			return err
 		}
 	}
 
 	if RCH {
-		if err := MF6.Rch(fileName, dataInterface, path); err != nil {
+		if err := MF6.Rch(fileName, dataInterface, path, mDesc); err != nil {
 			return err
 		}
 	}

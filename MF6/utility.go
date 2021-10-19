@@ -126,7 +126,7 @@ func stressPeriod(data []FileData, wel bool) (spData []string, err error) {
 	return spData, nil
 }
 
-func welRchCreator(wel bool, fullFilePath string, data []FileData) error {
+func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string) error {
 	file, err := os.Create(fullFilePath)
 	if err != nil {
 		return err
@@ -138,9 +138,9 @@ func welRchCreator(wel bool, fullFilePath string, data []FileData) error {
 	var hd []string
 	var errHd error
 	if wel {
-		hd, errHd = welHeader()
+		hd, errHd = welHeader(mDesc)
 	} else {
-		hd, errHd = rchHeader()
+		hd, errHd = rchHeader(mDesc)
 	}
 	if errHd != nil {
 		return err
