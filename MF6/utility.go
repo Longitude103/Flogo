@@ -90,18 +90,20 @@ func writeLines(writer *bufio.Writer, lines []string) error {
 
 // filterDataByDate is a function that filters the slice of FileData and then returns another slice of only those records
 // that match the date passed into the function.
-func filterDataByDate(dt time.Time, data []FileData) (rData []FileData, dataPresent bool) {
+func filterDataByDate(dt time.Time, data []FileData) (rData []FileData, length int, dataPresent bool) {
 	for _, d := range data {
 		if d.Date() == dt {
 			rData = append(rData, d)
 		}
 	}
 
+	length = len(rData)
+
 	if len(rData) == 0 {
-		return rData, false
+		return rData, 0, false
 	}
 
-	return rData, true
+	return rData, length, true
 }
 
 // stressPeriod is a function to return a slice of strings that are the formatted stress period data
@@ -126,6 +128,8 @@ func stressPeriod(data []FileData, wel bool) (spData []string, err error) {
 	return spData, nil
 }
 
+// welRchCreator is a utility function to creat either the wel or rch files based on the node number method. This function
+// calls the header creator based on the wel bool. It writes the file in the path given.
 func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string) error {
 	file, err := os.Create(fullFilePath)
 	if err != nil {
@@ -162,12 +166,17 @@ func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string)
 
 	monthCount := monthsCountSince(fDate, lDate)
 	nextDate := fDate
+	maxBound := 0
 
 	for i := 0; i < monthCount+1; i++ {
 		var spData []string
 
 		// filter data to just the fDate
-		filteredData, dataPresent := filterDataByDate(nextDate, data)
+		filteredData, length, dataPresent := filterDataByDate(nextDate, data)
+		if maxBound < length {
+			maxBound = length
+		}
+
 		// stress period welHeader
 		spData = append(spData, spHeader(i+1))
 		if !dataPresent {
@@ -195,6 +204,49 @@ func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string)
 
 		nextDate = nextDate.AddDate(0, 1, 0)
 	}
+
+	_ = file.Close()
+
+	if err := HeaderMod(fullFilePath, maxBound); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// HeaderMod is a function to modify the header of the RCH or WEL6 file at the end of the creation to put in the maximum
+// number of records into the header of the file that MODFLOW requires based on the maximum number of values in stress
+// period. It replaces the MAXBOUND * with the actual count.
+func HeaderMod(fullFilePath string, maxBound int) error {
+	file, err := os.OpenFile(fullFilePath, os.O_RDWR, os.ModePerm)
+	if err != nil {
+		return err
+	}
+
+	scanner := bufio.NewScanner(file)
+	byteCount := 0
+
+	for scanner.Scan() {
+		if scanner.Text() == "  MAXBOUND *" {
+			break
+		} else {
+			byteCount += len(scanner.Text()) + 1 // need to +1 to account for the "\n" that scanner doesn't display
+		}
+	}
+
+	_, err = file.Seek(int64(byteCount), 0)
+	if err != nil {
+		return err
+	}
+
+	mb := fmt.Sprintf("  MAXBOUND %d\n", maxBound)
+	bt := []byte(mb)
+	_, err = file.Write(bt)
+	if err != nil {
+		return err
+	}
+
+	_ = file.Close()
 
 	return nil
 }

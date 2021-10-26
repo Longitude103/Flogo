@@ -45,7 +45,7 @@ func TestWel(t *testing.T) {
 func Test_filterDataByDate(t *testing.T) {
 	dt := time.Date(2021, 4, 1, 0, 0, 0, 0, time.UTC)
 
-	d, dataPresent := filterDataByDate(dt, data)
+	d, _, dataPresent := filterDataByDate(dt, data)
 	if !dataPresent {
 		t.Error("function returned no data for the date")
 	}

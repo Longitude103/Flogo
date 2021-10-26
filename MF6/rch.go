@@ -2,8 +2,10 @@ package MF6
 
 import "path/filepath"
 
+// Rch is a function to create the RCH file and creates the final string for the file name. It calls the welRchCreator
+// utility function to make the file.
 func Rch(fileName string, data []FileData, path string, mDesc string) error {
-	fn := fileName + ".rch"
+	fn := fileName + ".RCH6"
 	fullPath := filepath.Join(path, fn)
 
 	if err := welRchCreator(false, fullPath, data, mDesc); err != nil {
@@ -13,7 +15,8 @@ func Rch(fileName string, data []FileData, path string, mDesc string) error {
 	return nil
 }
 
-// header is a function to write the MODFLOW 6 WEL6 header required for all files. This does have defaults in it.
+// rchHeader is a function to write the MODFLOW 6 RCH header required for all files. This does have defaults in it.
+// the MAXBOUND * is replaced later by the HeaderMod function.
 func rchHeader(mDesc string) ([]string, error) {
 	hd := []string{"# MODFLOW6 Recharge Package\n"}
 	if mDesc != "" {
@@ -24,7 +27,7 @@ func rchHeader(mDesc string) ([]string, error) {
 	options := []string{"BEGIN OPTIONS\n", "  AUXILIARY  RCHLAYER\n", "  SAVE_FLOWS\n", "END OPTIONS\n", "\n"}
 
 	hd = append(hd, options...)
-	dm := []string{"BEGIN DIMENSIONS\n", "  MAXBOUND 143508\n", "END DIMENSIONS\n\n\n"}
+	dm := []string{"BEGIN DIMENSIONS\n", "  MAXBOUND *\n", "END DIMENSIONS\n\n\n"}
 
 	hd = append(hd, dm...)
 	return hd, nil
