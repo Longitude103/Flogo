@@ -135,28 +135,10 @@ func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string)
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	writer := bufio.NewWriter(file)
 	var fileLines []string
-
-	var hd []string
-	var errHd error
-	if wel {
-		hd, errHd = welHeader(mDesc)
-	} else {
-		hd, errHd = rchHeader(mDesc)
-	}
-	if errHd != nil {
-		return err
-	}
-
-	// writes the welHeader
-	fileLines = append(fileLines, hd...)
-	if err := writeLines(writer, fileLines); err != nil {
-		return err
-	}
-
-	fileLines = nil
 
 	// write the first period
 	fDate, lDate, err := firstLastDate(data)
@@ -169,13 +151,34 @@ func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string)
 	maxBound := 0
 
 	for i := 0; i < monthCount+1; i++ {
-		var spData []string
-
-		// filter data to just the fDate
-		filteredData, length, dataPresent := filterDataByDate(nextDate, data)
+		_, length, _ := filterDataByDate(nextDate, data)
 		if maxBound < length {
 			maxBound = length
 		}
+	}
+
+	var hd []string
+	var errHd error
+	if wel {
+		hd, errHd = welHeader(mDesc, maxBound)
+	} else {
+		hd, errHd = rchHeader(mDesc, maxBound)
+	}
+	if errHd != nil {
+		return err
+	}
+
+	// writes the welHeader
+	fileLines = append(fileLines, hd...)
+	if err := writeLines(writer, fileLines); err != nil {
+		return err
+	}
+
+	for i := 0; i < monthCount+1; i++ {
+		var spData []string
+
+		// filter data to just the fDate
+		filteredData, _, dataPresent := filterDataByDate(nextDate, data)
 
 		// stress period welHeader
 		spData = append(spData, spHeader(i+1))
@@ -204,49 +207,6 @@ func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string)
 
 		nextDate = nextDate.AddDate(0, 1, 0)
 	}
-
-	_ = file.Close()
-
-	if err := HeaderMod(fullFilePath, maxBound); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// HeaderMod is a function to modify the header of the RCH or WEL6 file at the end of the creation to put in the maximum
-// number of records into the header of the file that MODFLOW requires based on the maximum number of values in stress
-// period. It replaces the MAXBOUND * with the actual count.
-func HeaderMod(fullFilePath string, maxBound int) error {
-	file, err := os.OpenFile(fullFilePath, os.O_RDWR, os.ModePerm)
-	if err != nil {
-		return err
-	}
-
-	scanner := bufio.NewScanner(file)
-	byteCount := 0
-
-	for scanner.Scan() {
-		if scanner.Text() == "  MAXBOUND *" {
-			break
-		} else {
-			byteCount += len(scanner.Text()) + 1 // need to +1 to account for the "\n" that scanner doesn't display
-		}
-	}
-
-	_, err = file.Seek(int64(byteCount), 0)
-	if err != nil {
-		return err
-	}
-
-	mb := fmt.Sprintf("  MAXBOUND %d\n", maxBound)
-	bt := []byte(mb)
-	_, err = file.Write(bt)
-	if err != nil {
-		return err
-	}
-
-	_ = file.Close()
 
 	return nil
 }
