@@ -151,7 +151,6 @@ func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string)
 
 	for i := 0; i < monthCount+1; i++ {
 		_, length, _ := filterDataByDate(nextDate, data)
-		fmt.Println(length)
 		if maxBound < length {
 			maxBound = length
 		}
