@@ -40,7 +40,7 @@ func TestWel(t *testing.T) {
 	var builtData = []FileData{d0, d1, d2, d3}
 
 	for i := 0; i < 9; i++ {
-		e := testStruct{dt: time.Date(2021, 4, 1, 0, 0, 0, 0, time.UTC), nd: 1 + i,
+		e := testStruct{dt: time.Date(2021, 5, 1, 0, 0, 0, 0, time.UTC), nd: 1 + i,
 			pumping: float64(-12 - i*3), well: 101 + i}
 		builtData = append(builtData, e)
 	}

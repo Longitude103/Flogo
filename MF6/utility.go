@@ -102,7 +102,6 @@ func filterDataByDate(dt time.Time, data []FileData) (rData []FileData, length i
 	if len(rData) == 0 {
 		return rData, 0, false
 	}
-
 	return rData, length, true
 }
 
@@ -152,10 +151,14 @@ func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string)
 
 	for i := 0; i < monthCount+1; i++ {
 		_, length, _ := filterDataByDate(nextDate, data)
+		fmt.Println(length)
 		if maxBound < length {
 			maxBound = length
 		}
+
+		nextDate = nextDate.AddDate(0, 1, 0)
 	}
+	nextDate = fDate
 
 	var hd []string
 	var errHd error
