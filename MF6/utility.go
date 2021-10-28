@@ -115,10 +115,10 @@ func stressPeriod(data []FileData, wel bool) (spData []string, err error) {
 		var s string
 		if wel {
 			// wel file just write the node and value
-			s = fmt.Sprintf(" %d %f\n", d.Node(), d.Value())
+			s = fmt.Sprintf(" %d %e\n", d.Node(), d.Value())
 		} else {
 			// rch file, need a layer number
-			s = fmt.Sprintf(" %d %f 1\n", d.Node(), d.Value()) // single layer only, can do future upgrade
+			s = fmt.Sprintf(" %d %e 1\n", d.Node(), d.Value()) // single layer only, can do future upgrade
 		}
 
 		spData = append(spData, s)

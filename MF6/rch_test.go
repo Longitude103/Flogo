@@ -25,7 +25,7 @@ func (t testRCHStruct) Value() float64 {
 }
 
 var r0 = testRCHStruct{dt: time.Date(2021, 4, 1, 0, 0, 0, 0, time.UTC), nd: 1,
-	recharge: .0045786}
+	recharge: .000086978}
 var r1 = testRCHStruct{dt: time.Date(2021, 4, 1, 0, 0, 0, 0, time.UTC), nd: 2,
 	recharge: 0.01258775}
 var r2 = testRCHStruct{dt: time.Date(2021, 5, 1, 0, 0, 0, 0, time.UTC), nd: 1,
