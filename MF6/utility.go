@@ -13,6 +13,7 @@ type FileData interface {
 	Date() time.Time
 	Node() int
 	Value() float64
+	RowCol() (int, int)
 }
 
 // firstLastDate receives a slice of structs with a date() method and returns the first and last date that is present in the data.
@@ -106,7 +107,7 @@ func filterDataByDate(dt time.Time, data []FileData) (rData []FileData, length i
 }
 
 // stressPeriod is a function to return a slice of strings that are the formatted stress period data
-func stressPeriod(data []FileData, wel bool) (spData []string, err error) {
+func stressPeriod(data []FileData, wel bool, Rc bool) (spData []string, err error) {
 	if len(data) == 0 {
 		return spData, errors.New("no data")
 	}
@@ -118,7 +119,13 @@ func stressPeriod(data []FileData, wel bool) (spData []string, err error) {
 			s = fmt.Sprintf(" %d %e\n", d.Node(), d.Value())
 		} else {
 			// rch file, need a layer number
-			s = fmt.Sprintf(" %d %e 1\n", d.Node(), d.Value()) // single layer only, can do future upgrade
+			if Rc {
+				r, c := d.RowCol()
+				s = fmt.Sprintf(" 1 %d %d %e  1\n", r, c, d.Value())
+			} else {
+				s = fmt.Sprintf(" %d %e 1\n", d.Node(), d.Value()) // single layer only, can do future upgrade
+			}
+
 		}
 
 		spData = append(spData, s)
@@ -129,7 +136,7 @@ func stressPeriod(data []FileData, wel bool) (spData []string, err error) {
 
 // welRchCreator is a utility function to creat either the wel or rch files based on the node number method. This function
 // calls the header creator based on the wel bool. It writes the file in the path given.
-func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string) error {
+func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string, Rc bool) error {
 	file, err := os.Create(fullFilePath)
 	if err != nil {
 		return err
@@ -196,7 +203,7 @@ func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string)
 		}
 
 		// stress period data
-		d, err := stressPeriod(filteredData, wel)
+		d, err := stressPeriod(filteredData, wel, Rc)
 		if err == nil {
 			spData = append(spData, d...)
 		}

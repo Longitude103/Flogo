@@ -10,6 +10,8 @@ type testRCHStruct struct {
 	dt       time.Time
 	nd       int
 	recharge float64
+	rw       int
+	clm      int
 }
 
 func (t testRCHStruct) Date() time.Time {
@@ -22,6 +24,10 @@ func (t testRCHStruct) Node() int {
 
 func (t testRCHStruct) Value() float64 {
 	return t.recharge
+}
+
+func (t testRCHStruct) RowCol() (int, int) {
+	return t.rw, t.clm
 }
 
 var r0 = testRCHStruct{dt: time.Date(2021, 4, 1, 0, 0, 0, 0, time.UTC), nd: 1,
@@ -40,7 +46,7 @@ var r5 = testRCHStruct{dt: time.Date(2021, 10, 1, 0, 0, 0, 0, time.UTC), nd: 3,
 var rchTestData = []FileData{r0, r1, r2, r3, r4, r5}
 
 func Test_Rch(t *testing.T) {
-	err := Rch("testRch", rchTestData, ".", "test description")
+	err := Rch("testRch", rchTestData, ".", "test description", false)
 
 	if err != nil {
 		t.Errorf("Function errored with %s", err)

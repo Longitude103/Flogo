@@ -7,11 +7,11 @@ import (
 
 // Wel is a function to create the WEL6 file and creates the final string for the file name. It calls the welRchCreator
 // utility function to make the file.
-func Wel(fileName string, data []FileData, path string, mDesc string) error {
+func Wel(fileName string, data []FileData, path string, mDesc string, Rc bool) error {
 	fn := fileName + ".WEL6"
 	fullPath := filepath.Join(path, fn)
 
-	if err := welRchCreator(true, fullPath, data, mDesc); err != nil {
+	if err := welRchCreator(true, fullPath, data, mDesc, Rc); err != nil {
 		return err
 	}
 

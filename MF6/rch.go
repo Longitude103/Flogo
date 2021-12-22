@@ -7,11 +7,11 @@ import (
 
 // Rch is a function to create the RCH file and creates the final string for the file name. It calls the welRchCreator
 // utility function to make the file.
-func Rch(fileName string, data []FileData, path string, mDesc string) error {
+func Rch(fileName string, data []FileData, path string, mDesc string, Rc bool) error {
 	fn := fileName + ".RCH6"
 	fullPath := filepath.Join(path, fn)
 
-	if err := welRchCreator(false, fullPath, data, mDesc); err != nil {
+	if err := welRchCreator(false, fullPath, data, mDesc, Rc); err != nil {
 		return err
 	}
 

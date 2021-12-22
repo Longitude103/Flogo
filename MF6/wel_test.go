@@ -11,6 +11,8 @@ type testStruct struct {
 	nd      int
 	pumping float64
 	well    int
+	rw      int
+	clm     int
 }
 
 func (t testStruct) Date() time.Time {
@@ -23,6 +25,10 @@ func (t testStruct) Node() int {
 
 func (t testStruct) Value() float64 {
 	return t.pumping
+}
+
+func (t testStruct) RowCol() (int, int) {
+	return t.rw, t.clm
 }
 
 var d0 = testStruct{dt: time.Date(2021, 4, 1, 0, 0, 0, 0, time.UTC), nd: 1,
@@ -45,7 +51,7 @@ func TestWel(t *testing.T) {
 		builtData = append(builtData, e)
 	}
 
-	if err := Wel("test", builtData, ".", "test description"); err != nil {
+	if err := Wel("test", builtData, ".", "test description", false); err != nil {
 		t.Error("Wel function errored with", err)
 	}
 }
