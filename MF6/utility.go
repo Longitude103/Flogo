@@ -115,8 +115,13 @@ func stressPeriod(data []FileData, wel bool, Rc bool) (spData []string, err erro
 	for _, d := range data {
 		var s string
 		if wel {
-			// wel file just write the node and value
-			s = fmt.Sprintf(" %d %e\n", d.Node(), d.Value())
+			if Rc {
+				r, c := d.RowCol()
+				s = fmt.Sprintf(" 1 %d %d %e\n", r, c, d.Value())
+			} else {
+				// wel file just write the node and value
+				s = fmt.Sprintf(" %d %e\n", d.Node(), d.Value())
+			}
 		} else {
 			// rch file, need a layer number
 			if Rc {

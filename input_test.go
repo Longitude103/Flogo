@@ -60,6 +60,16 @@ func TestInput(t *testing.T) {
 
 }
 
+// Testing package for the input file generator.
+func TestWELRowCol(t *testing.T) {
+	data = append(data, r1, r2, r3, r4, r5, r6)
+
+	if err := Input(true, false, true, "testFile", data, ".", "test description"); err != nil {
+		t.Error("Function produced an error")
+	}
+
+}
+
 func TestInput2(t *testing.T) {
 	data = append(data, d1, d2, d3, d4, d5, d6)
 
