@@ -13,7 +13,10 @@ type FileData interface {
 	Date() time.Time
 	Node() int
 	Value() float64
+	UseValue() bool
 	RowCol() (int, int)
+	ConvertToFtPDay() float64
+	ConvertToFt3PDay() float64
 }
 
 // firstLastDate receives a slice of structs with a date() method and returns the first and last date that is present in the data.
@@ -117,20 +120,37 @@ func stressPeriod(data []FileData, wel bool, Rc bool) (spData []string, err erro
 		if wel {
 			if Rc {
 				r, c := d.RowCol()
-				s = fmt.Sprintf(" 1 %d %d %e\n", r, c, d.Value())
+				if d.UseValue() {
+					s = fmt.Sprintf(" 1 %d %d %e\n", r, c, d.Value())
+				} else {
+					s = fmt.Sprintf(" 1 %d %d %e\n", r, c, d.ConvertToFt3PDay())
+				}
+
 			} else {
 				// wel file just write the node and value
-				s = fmt.Sprintf(" %d %e\n", d.Node(), d.Value())
+				if d.UseValue() {
+					s = fmt.Sprintf(" %d %e\n", d.Node(), d.Value())
+				} else {
+					s = fmt.Sprintf(" %d %e\n", d.Node(), d.ConvertToFt3PDay())
+				}
+
 			}
 		} else {
 			// rch file, need a layer number
 			if Rc {
 				r, c := d.RowCol()
-				s = fmt.Sprintf(" 1 %d %d %e  1\n", r, c, d.Value())
+				if d.UseValue() {
+					s = fmt.Sprintf(" 1 %d %d %e  1\n", r, c, d.Value())
+				} else {
+					s = fmt.Sprintf(" 1 %d %d %e  1\n", r, c, d.ConvertToFtPDay())
+				}
 			} else {
-				s = fmt.Sprintf(" %d %e 1\n", d.Node(), d.Value()) // single layer only, can do future upgrade
+				if d.UseValue() {
+					s = fmt.Sprintf(" %d %e 1\n", d.Node(), d.Value()) // single layer only, can do future upgrade
+				} else {
+					s = fmt.Sprintf(" %d %e 1\n", d.Node(), d.ConvertToFtPDay()) // single layer only, can do future upgrade
+				}
 			}
-
 		}
 
 		spData = append(spData, s)

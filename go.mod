@@ -1,3 +1,3 @@
 module github.com/Longitude103/Flogo
 
-go 1.17
+go 1.18

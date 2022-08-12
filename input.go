@@ -20,7 +20,10 @@ func Input(WEL bool, RCH bool, Rc bool, fileName string, data []interface {
 	Date() time.Time
 	Node() int
 	Value() float64
+	UseValue() bool
 	RowCol() (int, int)
+	ConvertToFtPDay() float64
+	ConvertToFt3PDay() float64
 }, path string, mDesc string) error {
 	dataInterface := make([]MF6.FileData, len(data))
 	for i, v := range data {
