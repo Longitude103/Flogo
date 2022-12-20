@@ -3,6 +3,7 @@ package MF6
 import (
 	"fmt"
 	"path/filepath"
+	"regexp"
 )
 
 // Wel is a function to create the WEL6 file and creates the final string for the file name. It calls the welRchCreator
@@ -23,11 +24,15 @@ func Wel(fileName string, data []FileData, path string, mDesc string, Rc bool) e
 func welHeader(mDesc string, maxBound int) ([]string, error) {
 	hd := []string{"# MODFLOW6 Well Boundary Package\n"}
 	if mDesc != "" {
-		mDesc = "# " + mDesc + "\n"
-		hd = append(hd, mDesc)
+		mDescComment := "# " + mDesc + "\n"
+		hd = append(hd, mDescComment)
 	}
 
-	options := []string{"BEGIN OPTIONS\n", "  SAVE_FLOWS\n", "  AUTO_FLOW_REDUCE 1.000000e-01\n", "END OPTIONS\n", "\n", "BEGIN DIMENSIONS\n"}
+	pattern := regexp.MustCompile(`\s+`)
+	csvFileName := pattern.ReplaceAllString(mDesc, "_")
+	optionCSV := fmt.Sprintf("  AUTO_FLOW_REDUCE_CSV FILEOUT %s.csv\n", csvFileName)
+
+	options := []string{"BEGIN OPTIONS\n", "  SAVE_FLOWS\n", "  AUTO_FLOW_REDUCE 1.000000e-01\n", optionCSV, "END OPTIONS\n", "\n", "BEGIN DIMENSIONS\n"}
 
 	hd = append(hd, options...)
 	hd = append(hd, fmt.Sprintf("  MAXBOUND %d\n", maxBound), "END DIMENSIONS\n\n\n")
