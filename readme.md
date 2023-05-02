@@ -32,3 +32,4 @@ in the local directory. Data must be passed as a **slice of interface{} with the
 - data => the data needs to be in a struct and include Data, Node, Value methods, but also rowColumn() method if Rc == true
 - path => a string path of where to save the file
 - mDesc => a string of the model description for the file header
+- modelStartDate => the start date of the model in a time.Time format.

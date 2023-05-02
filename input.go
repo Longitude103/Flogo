@@ -24,20 +24,20 @@ func Input(WEL bool, RCH bool, Rc bool, fileName string, data []interface {
 	RowCol() (int, int)
 	ConvertToFtPDay() float64
 	ConvertToFt3PDay() float64
-}, path string, mDesc string) error {
+}, path string, mDesc string, modelStartDate time.Time) error {
 	dataInterface := make([]MF6.FileData, len(data))
 	for i, v := range data {
 		dataInterface[i] = v
 	}
 
 	if WEL {
-		if err := MF6.Wel(fileName, dataInterface, path, mDesc, Rc); err != nil {
+		if err := MF6.Wel(fileName, dataInterface, path, mDesc, modelStartDate, Rc); err != nil {
 			return err
 		}
 	}
 
 	if RCH {
-		if err := MF6.Rch(fileName, dataInterface, path, mDesc, Rc); err != nil {
+		if err := MF6.Rch(fileName, dataInterface, path, mDesc, modelStartDate, Rc); err != nil {
 			return err
 		}
 	}

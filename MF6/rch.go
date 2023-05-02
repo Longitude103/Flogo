@@ -3,15 +3,16 @@ package MF6
 import (
 	"fmt"
 	"path/filepath"
+	"time"
 )
 
 // Rch is a function to create the RCH file and creates the final string for the file name. It calls the welRchCreator
 // utility function to make the file.
-func Rch(fileName string, data []FileData, path string, mDesc string, Rc bool) error {
+func Rch(fileName string, data []FileData, path string, mDesc string, modelStartDate time.Time, Rc bool) error {
 	fn := fileName + ".RCH6"
 	fullPath := filepath.Join(path, fn)
 
-	if err := welRchCreator(false, fullPath, data, mDesc, Rc); err != nil {
+	if err := welRchCreator(false, fullPath, data, mDesc, modelStartDate, Rc); err != nil {
 		return err
 	}
 

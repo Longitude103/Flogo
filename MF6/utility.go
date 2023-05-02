@@ -161,12 +161,17 @@ func stressPeriod(data []FileData, wel bool, Rc bool) (spData []string, err erro
 
 // welRchCreator is a utility function to creat either the wel or rch files based on the node number method. This function
 // calls the header creator based on the wel bool. It writes the file in the path given.
-func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string, Rc bool) error {
+func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string, modelStartDate time.Time, Rc bool) error {
 	file, err := os.Create(fullFilePath)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}(file)
 
 	writer := bufio.NewWriter(file)
 	var fileLines []string
@@ -177,7 +182,14 @@ func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string,
 		return err
 	}
 
-	monthCount := monthsCountSince(fDate, lDate)
+	// Add model start date
+	monthsSinceStart := 0
+	if modelStartDate.Before(fDate) {
+		// model started before first date of data, need to start period numbering from first data period number
+		monthsSinceStart = monthsCountSince(modelStartDate, fDate)
+	}
+
+	monthCount := monthsCountSince(fDate, lDate) + monthsSinceStart
 	nextDate := fDate
 	maxBound := 0
 
@@ -208,7 +220,7 @@ func welRchCreator(wel bool, fullFilePath string, data []FileData, mDesc string,
 		return err
 	}
 
-	for i := 0; i < monthCount+1; i++ {
+	for i := monthsSinceStart; i < monthCount+1; i++ {
 		var spData []string
 
 		// filter data to just the fDate
